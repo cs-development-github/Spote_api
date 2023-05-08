@@ -32,7 +32,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     environment:
-      PMA_HOST: spote
+      PMA_HOST: database
       MYSQL_ROOT_PASSWORD: spote
     ports:
       - "8080:80"

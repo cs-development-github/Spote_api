@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\ApiResource;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource]
+
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 

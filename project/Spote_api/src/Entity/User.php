@@ -12,6 +12,8 @@ use ApiPlatform\Metadata\ApiResource;
 #[ApiResource]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    use Timestampable;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -58,6 +60,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+
     }
 
     /**

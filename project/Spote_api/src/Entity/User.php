@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Controller\MeController;
@@ -169,15 +168,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
         $this->avatar = $avatar;
 
         return $this;
-    }
-
-    public static function createFromPayLoad($id, array $payload)
-    {
-        return (new User())
-            ->setId($id)->setEmail($payload['username'] ?? '')
-            ->setRoles($payload['roles'] ?? ["ROLES_USERS"])
-            ->setFirstname($payload['firstname'] ?? '')
-            ->setLastname($payload['lastname'] ?? '')
-            ->setUuid($payload['uuid'] ?? '');
     }
 }

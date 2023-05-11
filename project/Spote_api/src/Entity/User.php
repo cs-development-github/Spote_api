@@ -2,17 +2,34 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\NotFoundAction;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/me',
+            controller: MeController::class,
+
+            name: 'me'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
+        )
+    ]
+)]
 
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
 
     use Timestampable;
@@ -82,7 +99,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -153,5 +169,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    public static function createFromPayLoad($id, array $payload)
+    {
+        return (new User())
+            ->setId($id)->setEmail($payload['username'] ?? '')
+            ->setRoles($payload['roles'] ?? ["ROLES_USERS"])
+            ->setFirstname($payload['firstname'] ?? '')
+            ->setLastname($payload['lastname'] ?? '')
+            ->setUuid($payload['uuid'] ?? '');
     }
 }

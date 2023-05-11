@@ -33,4 +33,5 @@ For the other times you just have to turn on docker and run the following comman
   symfony:serve
 ```
 
-You are free to edit the .env of the project, but don't forget to edit the same in the dockerFile
+You are free to edit the .env of the project, but don't forget to edit the same in the dockerFile  
+Follow the channel on discord

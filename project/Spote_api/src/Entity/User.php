@@ -28,7 +28,7 @@ use ApiPlatform\Metadata\ApiResource;
 )]
 
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use Timestampable;

@@ -54,10 +54,14 @@ class Event
     #[ORM\OneToOne(mappedBy: 'event', cascade: ['persist', 'remove'])]
     private ?EventNetworks $eventNetworks = null;
 
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventType::class, orphanRemoval: true)]
+    private Collection $eventTypes;
+
     public function __construct()
     {
         $this->eventSchedules = new ArrayCollection();
         $this->eventOpinions = new ArrayCollection();
+        $this->eventTypes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -235,6 +239,36 @@ class Event
         }
 
         $this->eventNetworks = $eventNetworks;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EventType>
+     */
+    public function getEventTypes(): Collection
+    {
+        return $this->eventTypes;
+    }
+
+    public function addEventType(EventType $eventType): self
+    {
+        if (!$this->eventTypes->contains($eventType)) {
+            $this->eventTypes->add($eventType);
+            $eventType->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventType(EventType $eventType): self
+    {
+        if ($this->eventTypes->removeElement($eventType)) {
+            // set the owning side to null (unless already changed)
+            if ($eventType->getEvent() === $this) {
+                $eventType->setEvent(null);
+            }
+        }
 
         return $this;
     }

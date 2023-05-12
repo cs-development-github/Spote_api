@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventOpinionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventOpinionRepository::class)]
 #[ApiResource]
@@ -17,17 +18,21 @@ class EventOpinion
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups("event")]
     private ?int $note = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups("event")]
     private ?string $opinion = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventOpinions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("event")]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventOpinions')]
     #[ORM\JoinColumn(nullable: false)]
+
     private ?Event $event = null;
 
     public function getId(): ?int

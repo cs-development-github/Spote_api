@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['event']]
+)]
 class Event
 {
     use Timestampable;
@@ -18,6 +21,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("event")]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
@@ -25,36 +29,47 @@ class Event
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("event")]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("event")]
     private ?string $cover = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups("event")]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("event")]
     private ?string $location = null;
 
     #[ORM\Column]
+    #[Groups("event")]
     private ?bool $parution = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups("event")]
     private ?\DateTimeInterface $start_date = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups("event")]
     private ?\DateTimeInterface $end_date = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSchedules::class, orphanRemoval: true)]
+    #[Groups("event")]
     private Collection $eventSchedules;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventOpinion::class, orphanRemoval: true)]
+    #[Groups("event")]
     private Collection $eventOpinions;
 
     #[ORM\OneToOne(mappedBy: 'event', cascade: ['persist', 'remove'])]
+    #[Groups("event")]
     private ?EventNetworks $eventNetworks = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventType::class, orphanRemoval: true)]
+    #[Groups("event")]
     private Collection $eventTypes;
 
     public function __construct()

@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventTypeRepository::class)]
 #[ApiResource]
@@ -21,6 +22,7 @@ class EventType
 
     #[ORM\ManyToOne(inversedBy: 'eventTypes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("event")]
     private ?Categorie $Categorie = null;
 
     public function getId(): ?int

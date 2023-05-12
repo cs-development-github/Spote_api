@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventNetworksRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventNetworksRepository::class)]
 #[ApiResource]
@@ -17,9 +18,11 @@ class EventNetworks
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("event")]
     private ?string $network_name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups("event")]
     private ?string $link = null;
 
     #[ORM\OneToOne(inversedBy: 'eventNetworks', cascade: ['persist', 'remove'])]

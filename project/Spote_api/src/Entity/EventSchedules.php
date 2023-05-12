@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventSchedulesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventSchedulesRepository::class)]
 #[ApiResource]
@@ -17,12 +18,15 @@ class EventSchedules
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups("event")]
     private ?int $day = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups("event")]
     private ?\DateTimeInterface $end_time = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups("event")]
     private ?\DateTimeInterface $start_time = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventSchedules')]

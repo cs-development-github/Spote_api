@@ -44,6 +44,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Event::class)]
     private Collection $events;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: EventOpinion::class, orphanRemoval: true)]
+    private Collection $eventOpinions;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,6 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->events = new ArrayCollection();
+        $this->eventOpinions = new ArrayCollection();
     }
 
     /**
@@ -181,6 +185,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($event->getUserId() === $this) {
                 $event->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EventOpinion>
+     */
+    public function getEventOpinions(): Collection
+    {
+        return $this->eventOpinions;
+    }
+
+    public function addEventOpinion(EventOpinion $eventOpinion): self
+    {
+        if (!$this->eventOpinions->contains($eventOpinion)) {
+            $this->eventOpinions->add($eventOpinion);
+            $eventOpinion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventOpinion(EventOpinion $eventOpinion): self
+    {
+        if ($this->eventOpinions->removeElement($eventOpinion)) {
+            // set the owning side to null (unless already changed)
+            if ($eventOpinion->getUser() === $this) {
+                $eventOpinion->setUser(null);
             }
         }
 

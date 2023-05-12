@@ -48,9 +48,13 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSchedules::class, orphanRemoval: true)]
     private Collection $eventSchedules;
 
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventOpinion::class, orphanRemoval: true)]
+    private Collection $eventOpinions;
+
     public function __construct()
     {
         $this->eventSchedules = new ArrayCollection();
+        $this->eventOpinions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,6 +183,36 @@ class Event
             // set the owning side to null (unless already changed)
             if ($eventSchedule->getEvent() === $this) {
                 $eventSchedule->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EventOpinion>
+     */
+    public function getEventOpinions(): Collection
+    {
+        return $this->eventOpinions;
+    }
+
+    public function addEventOpinion(EventOpinion $eventOpinion): self
+    {
+        if (!$this->eventOpinions->contains($eventOpinion)) {
+            $this->eventOpinions->add($eventOpinion);
+            $eventOpinion->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventOpinion(EventOpinion $eventOpinion): self
+    {
+        if ($this->eventOpinions->removeElement($eventOpinion)) {
+            // set the owning side to null (unless already changed)
+            if ($eventOpinion->getEvent() === $this) {
+                $eventOpinion->setEvent(null);
             }
         }
 

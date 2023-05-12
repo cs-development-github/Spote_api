@@ -51,6 +51,9 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventOpinion::class, orphanRemoval: true)]
     private Collection $eventOpinions;
 
+    #[ORM\OneToOne(mappedBy: 'event', cascade: ['persist', 'remove'])]
+    private ?EventNetworks $eventNetworks = null;
+
     public function __construct()
     {
         $this->eventSchedules = new ArrayCollection();
@@ -215,6 +218,23 @@ class Event
                 $eventOpinion->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEventNetworks(): ?EventNetworks
+    {
+        return $this->eventNetworks;
+    }
+
+    public function setEventNetworks(EventNetworks $eventNetworks): self
+    {
+        // set the owning side of the relation if necessary
+        if ($eventNetworks->getEvent() !== $this) {
+            $eventNetworks->setEvent($this);
+        }
+
+        $this->eventNetworks = $eventNetworks;
 
         return $this;
     }

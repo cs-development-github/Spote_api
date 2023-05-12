@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Event
 {
     use Timestampable;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -33,14 +36,22 @@ class Event
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $start_date = null;
-
     #[ORM\Column]
     private ?bool $parution = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $start_date = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $end_date = null;
+
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSchedules::class, orphanRemoval: true)]
+    private Collection $eventSchedules;
+
+    public function __construct()
+    {
+        $this->eventSchedules = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,6 +151,36 @@ class Event
     public function setEndDate(\DateTimeInterface $end_date): self
     {
         $this->end_date = $end_date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EventSchedules>
+     */
+    public function getEventSchedules(): Collection
+    {
+        return $this->eventSchedules;
+    }
+
+    public function addEventSchedule(EventSchedules $eventSchedule): self
+    {
+        if (!$this->eventSchedules->contains($eventSchedule)) {
+            $this->eventSchedules->add($eventSchedule);
+            $eventSchedule->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventSchedule(EventSchedules $eventSchedule): self
+    {
+        if ($this->eventSchedules->removeElement($eventSchedule)) {
+            // set the owning side to null (unless already changed)
+            if ($eventSchedule->getEvent() === $this) {
+                $eventSchedule->setEvent(null);
+            }
+        }
 
         return $this;
     }

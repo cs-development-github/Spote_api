@@ -20,7 +20,7 @@ class Categorie
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
-    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: EventType::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'Categorie', targetEntity: EventType::class, orphanRemoval: true)]
     private Collection $eventTypes;
 
     public function __construct()

@@ -2,12 +2,30 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Metadata\ApiResource;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/me',
+            controller: MeController::class,
+
+            name: 'me'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
+        )
+    ]
+)]
+
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

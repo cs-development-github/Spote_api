@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,12 +18,8 @@ use ApiPlatform\Metadata\ApiResource;
         new Get(
             uriTemplate: '/me',
             controller: MeController::class,
-
             name: 'me'
         ),
-        new GetCollection(
-            security: "is_granted('ROLE_ADMIN')",
-        )
     ]
 )]
 

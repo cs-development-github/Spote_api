@@ -83,6 +83,33 @@ final class JwtDecorator implements OpenApiFactoryInterface
         );
         $openApi->getPaths()->addPath('/auth', $pathItem);
 
+
+        $pathItem = new Model\PathItem(
+            ref: 'Register',
+            post: new Model\Operation(
+                operationId: 'postRegisterItem',
+                tags: ['User'],
+                responses: [
+                    '201' => [
+                        'description' => 'User registered successfully',
+                    ],
+                ],
+                summary: 'Register new user',
+                requestBody: new Model\RequestBody(
+                    description: 'Create a new user account',
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/User',
+                            ],
+                        ],
+                    ]),
+                ),
+                security: [],
+            ),
+        );
+        $openApi->getPaths()->addPath('/register', $pathItem);
+
         return $openApi;
     }
 }

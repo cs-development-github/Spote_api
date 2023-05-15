@@ -1,67 +1,54 @@
 <?php
 
-namespace App\Entity;
+namespace App\ApiResource;
 
-use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\MeController;
+use App\Entity\User;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/me',
+            controller: MeController::class,
+            name: 'me'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
+        )
+    ]
+)]
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class UserResource implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    private User $user;
 
-    use Timestampable;
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
-
-    #[ORM\Column]
-    private array $roles = [];
-
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $lastname = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $avatar = null;
-
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->user->getId();
     }
 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return $this->user->getEmail();
     }
 
     public function setEmail(string $email): self
     {
-        $this->email = $email;
+        $this->user->setEmail($email);
 
         return $this;
     }
 
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
-
-    }
 
     /**
      * A visual identifier that represents this user.
@@ -70,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->user->getEmail();
     }
 
     /**
@@ -78,7 +65,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = $this->user->getRoles();
+        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -86,7 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
+        $this->user->setRoles($roles);
 
         return $this;
     }
@@ -96,12 +84,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return $this->password;
+        return $this->user->getPassword();
     }
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $this->user->setPassword($password);
 
         return $this;
     }
@@ -117,36 +105,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->user->getName();
     }
 
     public function setName(string $name): self
     {
-        $this->name = $name;
+        $this->user->setName($name);
 
         return $this;
     }
 
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return $this->user->getName();
     }
 
     public function setLastname(string $lastname): self
     {
-        $this->lastname = $lastname;
+        $this->user->setLastname($lastname);
 
         return $this;
     }
 
     public function getAvatar(): ?string
     {
-        return $this->avatar;
+        return $this->user->getAvatar();
     }
 
     public function setAvatar(?string $avatar): self
     {
-        $this->avatar = $avatar;
+        $this->user->setAvatar($avatar);
 
         return $this;
     }

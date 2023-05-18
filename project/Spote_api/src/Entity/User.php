@@ -38,6 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
+    //#[ORM\ManyToMany(targetEntity: Conversation::class)]
+    //#[ORM\JoinTable(name:"User_Conversation")]
+    //private $conversation;
+
     public function getId(): ?int
     {
         return $this->id;

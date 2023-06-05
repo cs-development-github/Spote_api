@@ -3,3 +3,12 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+auth:
+    path: /auth
+    methods: ['POST']
+
+register:
+    path: /register
+    controller: App\Controller\UserController::register
+    methods: ['POST']

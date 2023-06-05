@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['event']]
 )]
-class Event
+class  Event
 {
     use Timestampable;
     
@@ -23,10 +23,6 @@ class Event
     #[ORM\Column]
     #[Groups("event")]
     private ?int $id = null;
-
-    #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     #[Groups("event")]
@@ -72,6 +68,10 @@ class Event
     #[Groups("event")]
     private Collection $eventTypes;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->eventSchedules = new ArrayCollection();
@@ -84,17 +84,6 @@ class Event
         return $this->id;
     }
 
-    public function getUserId(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUserId(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 
     public function getTitle(): ?string
     {
@@ -284,6 +273,18 @@ class Event
                 $eventType->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

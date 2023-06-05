@@ -24,7 +24,7 @@ class Conversation
     private Collection $messages;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
-    #[ORM\JoinTable(name:"User_Conversation")]
+    #[ORM\JoinTable(name:"user_conversation")]
     private $user;
 
     public function __construct()

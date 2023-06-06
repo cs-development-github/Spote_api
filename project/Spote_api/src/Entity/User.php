@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +16,17 @@ use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/me',
+            controller: MeController::class,
+            name: 'me'
+        ),
+    ]
+)]
+
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use Timestampable;
@@ -45,11 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups("event")]
     private ?string $avatar = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Event::class)]
-    private Collection $events;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: EventOpinion::class, orphanRemoval: true)]
     private Collection $eventOpinions;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Event::class)]
+    private Collection $events;
 
     public function getId(): ?int
     {
@@ -72,8 +87,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->events = new ArrayCollection();
         $this->eventOpinions = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     /**
@@ -92,7 +107,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -173,28 +187,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->events;
     }
 
-    public function addEvent(Event $event): self
-    {
-        if (!$this->events->contains($event)) {
-            $this->events->add($event);
-            $event->setUserId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): self
-    {
-        if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getUserId() === $this) {
-                $event->setUserId(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, EventOpinion>
      */
@@ -219,6 +211,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($eventOpinion->getUser() === $this) {
                 $eventOpinion->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getUser() === $this) {
+                $event->setUser(null);
             }
         }
 

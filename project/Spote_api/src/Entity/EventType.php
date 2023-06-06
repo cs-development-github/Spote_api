@@ -23,7 +23,7 @@ class EventType
     #[ORM\ManyToOne(inversedBy: 'eventTypes')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups("event")]
-    private ?Categorie $Categorie = null;
+    private ?Category $Category = null;
 
     public function getId(): ?int
     {
@@ -42,14 +42,14 @@ class EventType
         return $this;
     }
 
-    public function getCategorie(): ?Categorie
+    public function getCategory(): ?Category
     {
-        return $this->Categorie;
+        return $this->Category;
     }
 
-    public function setCategorie(?Categorie $Categorie): self
+    public function setCategory(?Category $Category): self
     {
-        $this->Categorie = $Categorie;
+        $this->Category = $Category;
 
         return $this;
     }

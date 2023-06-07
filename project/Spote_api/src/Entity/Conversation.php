@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['conversation']]
+)]
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
 class Conversation
 {
@@ -18,9 +21,11 @@ class Conversation
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["conversation"])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'conversation_id', targetEntity: Message::class)]
+    #[Groups(["conversation"])]
     private Collection $messages;
 
     #[ORM\ManyToMany(targetEntity: User::class)]

@@ -30,14 +30,14 @@ class EventType
         return $this->id;
     }
 
-    public function getEvent(): ?event
+    public function getEvent(): ?Event
     {
         return $this->event;
     }
 
-    public function setEvent(?event $event): self
+    public function setEvent(?Event $Event): self
     {
-        $this->event = $event;
+        $this->Event = $Event;
 
         return $this;
     }

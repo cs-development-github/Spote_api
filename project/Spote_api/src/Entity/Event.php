@@ -60,10 +60,6 @@ class  Event
     #[Groups("event")]
     private Collection $eventOpinions;
 
-    #[ORM\OneToOne(mappedBy: 'event', cascade: ['persist', 'remove'])]
-    #[Groups("event")]
-    private ?EventNetworks $eventNetworks = null;
-
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventType::class, orphanRemoval: true)]
     #[Groups("event")]
     private Collection $eventTypes;
@@ -73,6 +69,9 @@ class  Event
     #[Groups("event")]
     private ?User $user = null;
 
+    #[ORM\OneToMany(mappedBy: 'Event', targetEntity: EventNetworks::class)]
+    private Collection $eventNetworks;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -80,6 +79,7 @@ class  Event
         $this->eventSchedules = new ArrayCollection();
         $this->eventOpinions = new ArrayCollection();
         $this->eventTypes = new ArrayCollection();
+        $this->eventNetworks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,23 +233,6 @@ class  Event
         return $this;
     }
 
-    public function getEventNetworks(): ?EventNetworks
-    {
-        return $this->eventNetworks;
-    }
-
-    public function setEventNetworks(EventNetworks $eventNetworks): self
-    {
-        // set the owning side of the relation if necessary
-        if ($eventNetworks->getEvent() !== $this) {
-            $eventNetworks->setEvent($this);
-        }
-
-        $this->eventNetworks = $eventNetworks;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, EventType>
      */
@@ -288,6 +271,36 @@ class  Event
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EventNetworks>
+     */
+    public function getEventNetworks(): Collection
+    {
+        return $this->eventNetworks;
+    }
+
+    public function addEventNetwork(EventNetworks $eventNetwork): self
+    {
+        if (!$this->eventNetworks->contains($eventNetwork)) {
+            $this->eventNetworks->add($eventNetwork);
+            $eventNetwork->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventNetwork(EventNetworks $eventNetwork): self
+    {
+        if ($this->eventNetworks->removeElement($eventNetwork)) {
+            // set the owning side to null (unless already changed)
+            if ($eventNetwork->getEvent() === $this) {
+                $eventNetwork->setEvent(null);
+            }
+        }
 
         return $this;
     }

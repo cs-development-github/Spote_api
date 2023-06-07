@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EventNetworksRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -21,13 +23,15 @@ class EventNetworks
     #[Groups("event")]
     private ?string $network_name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Groups("event")]
-    private ?string $link = null;
+    #[ORM\Column(length: 255)]
+    private ?string $networkUrl = null;
 
-    #[ORM\OneToOne(inversedBy: 'eventNetworks', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Event $event = null;
+    #[ORM\ManyToOne(inversedBy: 'eventNetworks')]
+    private ?Event $Event = null;
+
+    public function __construct()
+    {
+    }
 
     public function getId(): ?int
     {
@@ -58,14 +62,29 @@ class EventNetworks
         return $this;
     }
 
-    public function getEvent(): ?Event
+    public function getNetworkUrl(): ?string
     {
-        return $this->event;
+        return $this->networkUrl;
     }
 
-    public function setEvent(Event $event): self
+    public function setNetworkUrl(string $networkUrl): self
     {
-        $this->event = $event;
+        $this->networkUrl = $networkUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvent(): Collection
+    {
+        return $this->Event;
+    }
+
+    public function setEvent(?Event $Event): self
+    {
+        $this->Event = $Event;
 
         return $this;
     }

@@ -10,7 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['category']]
+)]
 class Category
 {
     #[ORM\Id]
@@ -19,10 +21,10 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups("event")]
+    #[Groups(["category","event"])]
     private ?string $label = null;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: EventType::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'Category', targetEntity: EventType::class, orphanRemoval: true)]
     private Collection $eventTypes;
 
     public function __construct()

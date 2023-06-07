@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230605084736 extends AbstractMigration
+final class Version20230607141037 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,14 +20,12 @@ final class Version20230605084736 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE User_Conversation RENAME INDEX idx_3cd0b3e99ac0396 TO IDX_A425AEB9AC0396');
-        $this->addSql('ALTER TABLE User_Conversation RENAME INDEX idx_3cd0b3e9a76ed395 TO IDX_A425AEBA76ED395');
+        $this->addSql('ALTER TABLE event_networks ADD network_url VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user_conversation RENAME INDEX idx_a425aeba76ed395 TO IDX_3CD0B3E9A76ED395');
-        $this->addSql('ALTER TABLE user_conversation RENAME INDEX idx_a425aeb9ac0396 TO IDX_3CD0B3E99AC0396');
+        $this->addSql('ALTER TABLE event_networks DROP network_url');
     }
 }

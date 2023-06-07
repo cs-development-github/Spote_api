@@ -6,6 +6,7 @@ use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
@@ -17,12 +18,15 @@ class Message
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["conversation"])]
     private ?string $content = null;
 
-    #[ORM\Column(type: Types::BLOB)]
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[Groups(["conversation"])]
     private $image = null;
 
     #[ORM\Column]
+    #[Groups(["conversation"])]
     private ?\DateTimeImmutable $sent_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]

@@ -3,15 +3,15 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\CategorieRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: CategorieRepository::class)]
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource]
-class Categorie
+class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,7 +22,7 @@ class Categorie
     #[Groups("event")]
     private ?string $label = null;
 
-    #[ORM\OneToMany(mappedBy: 'Categorie', targetEntity: EventType::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: EventType::class, orphanRemoval: true)]
     private Collection $eventTypes;
 
     public function __construct()
@@ -59,7 +59,7 @@ class Categorie
     {
         if (!$this->eventTypes->contains($eventType)) {
             $this->eventTypes->add($eventType);
-            $eventType->setCategorie($this);
+            $eventType->setCategory($this);
         }
 
         return $this;
@@ -69,8 +69,8 @@ class Categorie
     {
         if ($this->eventTypes->removeElement($eventType)) {
             // set the owning side to null (unless already changed)
-            if ($eventType->getCategorie() === $this) {
-                $eventType->setCategorie(null);
+            if ($eventType->getCategory() === $this) {
+                $eventType->setCategory(null);
             }
         }
 

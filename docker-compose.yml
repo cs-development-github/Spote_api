@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+  php8:
+    container_name: php8
+    build: docker/php8
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./project/:/opt/symfo
+    depends_on:
+      - database
+
+  mailer:
+    image: schickling/mailcatcher
+    ports: [1025, 1080]
+
+  database:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: spote
+      MYSQL_USER: ChangeMe
+      MYSQL_PASSWORD: symfony
+      MYSQL_ROOT_PASSWORD: symfony
+    volumes:
+      - ./data:/var/lib/mysql:rw
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: spote
+    ports:
+      - "8080:80"
+
+volumes:
+  db-data:

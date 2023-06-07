@@ -18,11 +18,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
+        new Get(),
         new Get(
             uriTemplate: '/me',
             controller: MeController::class,
             name: 'me'
         ),
+
     ]
 )]
 
@@ -48,15 +50,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups("event")]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups("event")]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups("event")]
     private ?string $avatar = null;
 
 

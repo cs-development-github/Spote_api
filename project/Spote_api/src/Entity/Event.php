@@ -70,10 +70,13 @@ class  Event
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("event")]
     private ?User $user = null;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
         $this->eventSchedules = new ArrayCollection();
         $this->eventOpinions = new ArrayCollection();
         $this->eventTypes = new ArrayCollection();

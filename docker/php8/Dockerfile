@@ -71,6 +71,14 @@ RUN yes | pecl install xdebug \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
+# Install CORS dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends libapache2-mod-rpaf && rm -r /var/lib/apt/lists/*
+RUN a2enmod rpaf
+
+# Set CORS headers
+RUN echo 'Header always set Access-Control-Allow-Origin "*" env=REDIRECT_UNIQUE_ID' >> /etc/apache2/conf-available/cors.conf
+RUN a2enconf cors
+
 ENV PATH /root/.composer/vendor/bin:$PATH
 CMD php-fpm
 

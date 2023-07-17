@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\MediaObject;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,17 +20,23 @@ class UserController extends AbstractController
 
         $user = new User();
         $user->setName($data['name']);
-        if($data['avatar']){
-            $user->setAvatar($data['avatar']);
-        }
         $user->setLastname($data['lastname']);
         $hashedPassword = $passwordHasher->hashPassword(
             $user,
             $data['password']
         );
+
+        if(isset($data['avatar'])){
+            $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=>$data['avatar']])[0]);
+        } else {
+            $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=>'1'])[0]);
+        }
         $user->setRoles(["ROLE_USER"]);
         $user->setPassword($hashedPassword);
         $user->setEmail($data['email']);
+        $user->setDateOfBirth(new \DateTimeImmutable($data['dateOfBirth']));
+        $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=>1])[0]);
+        $user->setGender($data['gender']);
 
         $entityManager->persist($user);
         $entityManager->flush();

@@ -1,5 +1,5 @@
 <?php
-// api/src/Entity/MediaObject.php
+
 namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;

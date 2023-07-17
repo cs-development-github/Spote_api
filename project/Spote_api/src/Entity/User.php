@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["event"])]
     private ?string $lastname = null;
 
-    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\ManyToOne(targetEntity: MediaObject::class,cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(["event","user"])]
     private ?MediaObject  $avatar = null;
@@ -72,13 +72,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Event::class)]
     private Collection $events;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     #[Groups(["user"])]
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(["user"])]
-    private ?int $gendre = null;
+    private ?int $gender = null;
 
     public function getId(): ?int
     {
@@ -264,14 +264,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGendre(): ?int
+    public function getGender(): ?int
     {
-        return $this->gendre;
+        return $this->gender;
     }
 
-    public function setGendre(?int $gendre): self
+    public function setGender(?int $gender): self
     {
-        $this->gendre = $gendre;
+        $this->gender = $gender;
 
         return $this;
     }

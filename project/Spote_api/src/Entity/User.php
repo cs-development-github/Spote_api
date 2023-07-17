@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
+    normalizationContext: ['groups' => ['user']],
     operations: [
         new Get(),
         new Get(
@@ -39,6 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(["user"])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -51,7 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["event"])]
+    #[Groups(["event","user"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -60,8 +62,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(targetEntity: MediaObject::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["event"])]
-    private ?string $avatar = null;
+    #[Groups(["event","user"])]
+    private ?MediaObject  $avatar = null;
 
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: EventOpinion::class, orphanRemoval: true)]
@@ -71,9 +73,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $events;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(["user"])]
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(["user"])]
     private ?int $gendre = null;
 
     public function getId(): ?int
@@ -177,12 +181,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAvatar(): ?string
+    public function getAvatar(): ?MediaObject
     {
         return $this->avatar;
     }
 
-    public function setAvatar(?string $avatar): self
+    public function setAvatar(?MediaObject $avatar): self
     {
         $this->avatar = $avatar;
 
@@ -245,7 +249,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $event->setUser(null);
             }
         }
-
         return $this;
     }
 

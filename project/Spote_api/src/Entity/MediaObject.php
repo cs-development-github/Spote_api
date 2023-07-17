@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 #[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
@@ -56,8 +57,10 @@ class MediaObject
     #[Assert\NotNull(groups: ['media_object_create'])]
     public ?File $file = null;
     #[ORM\Column(nullable: true)]
+    #[Groups(["event","user"])]
     public ?string $filePath = null;
     public function getId(): ?int
+
     {
         return $this->id;
     }

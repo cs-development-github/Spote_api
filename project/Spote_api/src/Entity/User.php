@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\ApiProperty;
 use App\Controller\MeController;
+use App\Controller\UploadImageUserController;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,7 +26,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             controller: MeController::class,
             name: 'me'
         ),
-
     ]
 )]
 
@@ -57,7 +58,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["event"])]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(["event"])]
     private ?string $avatar = null;
 
@@ -67,6 +69,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Event::class)]
     private Collection $events;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateOfBirth = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $gendre = null;
 
     public function getId(): ?int
     {
@@ -237,6 +245,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $event->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateOfBirth(): ?\DateTimeInterface
+    {
+        return $this->dateOfBirth;
+    }
+
+    public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): self
+    {
+        $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
+    }
+
+    public function getGendre(): ?int
+    {
+        return $this->gendre;
+    }
+
+    public function setGendre(?int $gendre): self
+    {
+        $this->gendre = $gendre;
 
         return $this;
     }

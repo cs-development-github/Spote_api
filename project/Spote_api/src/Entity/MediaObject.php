@@ -17,7 +17,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
-    normalizationContext: ['groups' => ['media_object:read']],
     types: ['https://schema.org/MediaObject'],
     operations: [
         new Get(),
@@ -50,11 +49,8 @@ class MediaObject
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;
-    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read'])]
     public ?string $contentUrl = null;
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
-    #[Assert\NotNull(groups: ['media_object_create'])]
     public ?File $file = null;
     #[ORM\Column(nullable: true)]
     #[Groups(["event","user"])]

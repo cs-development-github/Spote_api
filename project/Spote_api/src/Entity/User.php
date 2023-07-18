@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\GetCollection;
 use App\Controller\MeController;
-use App\Controller\UploadImageUserController;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,15 +17,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['user']],
     operations: [
-        new Get(),
-        new Get(
+        new GetCollection(
             uriTemplate: '/me',
             controller: MeController::class,
             name: 'me'
         ),
-    ]
+    ],
+    normalizationContext: ['groups' => ['user']]
 )]
 
 
@@ -60,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["event"])]
     private ?string $lastname = null;
 
-    #[ORM\ManyToOne(targetEntity: MediaObject::class,cascade: ['persist'])]
+    #[ORM\ManyToOne(targetEntity: MediaObject::class ,cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(["event","user"])]
     private ?MediaObject  $avatar = null;
@@ -103,6 +100,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new \DateTimeImmutable();
         $this->eventOpinions = new ArrayCollection();
         $this->events = new ArrayCollection();
+    }
+
+    public function __toString(){
+        return $this->name;
     }
 
     /**

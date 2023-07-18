@@ -2,15 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class MeController
+class MeController extends AbstractController
 {
-    public function __construct(private Security $security){}
+
+    public function __construct(private Security $security){
+    }
 
     public function __invoke(){
-        return $this->security->getUser();
+        return $this->getUser();
     }
 }

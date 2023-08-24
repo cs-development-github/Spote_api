@@ -27,7 +27,7 @@ class UserController extends AbstractController
         );
 
         if(isset($data['avatar'])){
-            $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=>$data['avatar']])[0]);
+            $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=> $data['avatar'] ])[0]);
         } else {
             $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=>'1'])[0]);
         }
@@ -35,7 +35,6 @@ class UserController extends AbstractController
         $user->setPassword($hashedPassword);
         $user->setEmail($data['email']);
         $user->setDateOfBirth(new \DateTimeImmutable($data['dateOfBirth']));
-        $user->setAvatar($entityManager->getRepository(MediaObject::class)->findBy(['id'=>1])[0]);
         $user->setGender($data['gender']);
 
         $entityManager->persist($user);

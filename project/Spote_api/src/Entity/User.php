@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -23,6 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             controller: MeController::class,
             name: 'me'
         ),
+        new Patch()
     ],
     normalizationContext: ['groups' => ['user']]
 )]
@@ -54,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["event"])]
+    #[Groups(["event","user"])]
     private ?string $lastname = null;
 
     #[ORM\ManyToOne(targetEntity: MediaObject::class ,cascade: ['persist'])]
